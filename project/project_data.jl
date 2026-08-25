@@ -1,51 +1,110 @@
+# constraints shared across all individual variables
 voltage_lb = 0.98
 voltage_ub = 1.02
 
 radian_lb = -pi
 radian_ub = pi
 
-# bkl data 
-b1_2 = -20.1
-b1_11 = -22.3
-b2_3 = -16.8
-b2_11 = -17.2
-b3_4 = -11.7
-b3_9 = -19.4
-b4_5 = -10.8
-b5_6 = -12.3
-b5_8 = -9.2
-b6_7 = -13.9
-b7_8 = -8.7
-b7_9 = -11.3
-b8_9 = -7.7
-b9_10 = -13.5
-b10_11 = -26.7
+# Representing the edges 
+edges = [
+    (1,2),
+    (1,11),
+    (2,3),
+    (2,11),
+    (3,4),
+    (3,9),
+    (4,5),
+    (5,6),
+    (5,8),
+    (6,7),
+    (7,8),
+    (7,9),
+    (8,9),
+    (9,10),
+    (10,11)
+]
 
-#gkl
-g1_2 = 4.12
-g1_11 = 5.67
-g2_3 = 2.41
-g2_11 = 2.78
-g3_4 = 1.98
-g3_9 = 3.23
-g4_5 = 1.59
-g5_6 = 1.71
-g5_8 = 1.26
-g6_7 = 1.11
-g7_8 = 1.32
-g7_9 = 2.01
-g8_9 = 4.41
-g9_10 = 2.14
-g10_11 = 5.06
+# Make sure it is bidirectional
+directed_edges = [
+    (k, l) for (k, l) in edges
+]
 
-# Consumer lower bounds
-c1_lb = 0.1
-c2_lb = 0.19
-c3_lb = 0.11
-c4_lb = 0.09
-c5_lb = 0.21
-c6_lb = 0.05
-c7_lb = 0.04
+append!(
+    directed_edges,
+    [(l, k) for (k, l) in edges]
+)
+
+    
+
+bkl_edge_values = Dict(
+    (1,2) => -20.1,
+    (1,11) => -22.3,
+    (2,3) => -16.8,
+    (2,11) => -17.2,
+    (3,4) => -11.7,
+    (3,9) => -19.4,
+    (4,5) => -10.8,
+    (5,6) => -12.3,
+    (5,8) => -9.2,
+    (6,7) => -13.9,
+    (7,8) => -8.7,
+    (7,9) => -11.3,
+    (8,9) => -7.7,
+    (9,10) => -13.5,
+    (10,11) => -26.7
+)
+
+# Make it bidirectional, can't hurt
+for ((k, l), value) in collect(bkl_edge_values)
+    bkl_edge_values[(l, k)] = value
+end
+
+
+# bkl dict with edges since tuples should be immutable in Julia
+gkl_edge_values = Dict(
+    (1,2) => 4.12,
+    (1,11) => 5.67,
+    (2,3) => 2.41,
+    (2,11) => 2.78,
+    (3,4) => 1.98,
+    (3,9) => 3.23,
+    (4,5) => 1.59,
+    (5,6) => 1.71,
+    (5,8) => 1.26,
+    (6,7) => 1.11,
+    (7,8) => 1.32,
+    (7,9) => 2.01,
+    (8,9) => 4.41,
+    (9,10) => 2.14,
+    (10,11) => 5.06
+)
+# Make it bidirectional too!
+
+for ((k, l), value) in collect(gkl_edge_values)
+    gkl_edge_values[(l, k)] = value
+end
+
+
+# List which generator points to which node. They should only reside in one. 
+
+generator_number_to_node = Dict(
+    1 => 2, # These all live in the same node
+    2 => 2,
+    3 => 2,
+    4 => 3,
+    5 => 4,
+    6 => 5,
+    7 => 7,
+    8 => 9,
+    9 => 9
+)
+
+# Continue tomorrow
+consumer_number_to_node = Dict(
+    
+
+
+)
 
 consumer_lb = [
     c1_lb,
