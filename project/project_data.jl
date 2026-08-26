@@ -2,8 +2,8 @@
 voltage_lb = 0.98
 voltage_ub = 1.02
 
-radian_lb = -pi
-radian_ub = pi
+phase_lb = -pi
+phase_ub = pi
 
 generator_lb = 0 # Non-negative
 
@@ -113,7 +113,7 @@ consumer_number_to_node = Dict(
     7 => 11
 )
 
-# Consumer demand lower bound
+# Consumer demand lower bound(?) Might be equality constraint later.
 consumer_demand_lb = [
     0.10,
     0.19,
@@ -154,6 +154,7 @@ generator_costs = [
 
 # Enumeration of nodes, generators, consumers
 nodes = 1:11
+println(nodes)
 n_nodes = length(nodes)
 n_generators = length(generator_ub)
 n_consumers = length(consumer_demand_lb)
