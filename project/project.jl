@@ -24,6 +24,8 @@ function reactive_power(
     return -voltage_k^2*b_kl + voltage_k*voltage_l(b_kl*cos(phase_k - phase_l) - g_kl*sin(phase_k - phase_l))
 end
 
+@variable()
+
 the_model = Model(Ipopt.Optimizer)
 lb = 0
 @variable(

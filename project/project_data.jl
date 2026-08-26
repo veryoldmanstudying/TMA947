@@ -5,6 +5,9 @@ voltage_ub = 1.02
 radian_lb = -pi
 radian_ub = pi
 
+generator_lb = 0 # Non-negative
+
+
 # Representing the edges 
 edges = [
     (1,2),
@@ -99,66 +102,59 @@ generator_number_to_node = Dict(
     9 => 9
 )
 
-# Continue tomorrow
+# Consumers also just reside in one node, but multiple consumers are never present in one node
 consumer_number_to_node = Dict(
-    
-
-
+    1 => 1,
+    2 => 4,
+    3 => 6,
+    4 => 8,
+    5 => 9,
+    6 => 10,
+    7 => 11
 )
 
-consumer_lb = [
-    c1_lb,
-    c2_lb,
-    c3_lb,
-    c4_lb,
-    c5_lb,
-    c6_lb,
-    c7_lb,
+# Consumer demand lower bound
+consumer_demand_lb = [
+    0.10,
+    0.19,
+    0.11,
+    0.09,
+    0.21,
+    0.05,
+    0.04,
 ]
 
 # Generator upper bounds
-g1_ub = 0.02
-g2_ub = 0.15
-g3_ub = 0.08
-g4_ub = 0.07
-g5_ub = 0.04
-g6_ub = 0.17
-g7_ub = 0.17
-g8_ub = 0.26
-g9_ub = 0.05
 
 generator_ub = [
-    g1_ub,
-    g2_ub,
-    g3_ub,
-    g4_ub,
-    g5_ub,
-    g6_ub,
-    g7_ub,
-    g8_ub,
-    g9_ub
+    0.02,
+    0.15,
+    0.08,
+    0.07,
+    0.04,
+    0.17,
+    0.17,
+    0.26,
+    0.05
 ]
 
-# Costs
-g1_cost = 175
-g2_cost = 100
-g3_cost = 150
-g4_cost = 150
-g5_cost = 300
-g6_cost = 350
-g7_cost = 400
-g8_cost = 300
-g9_cost = 200
+# Generator costs per unit of power
 
 generator_costs = [
-    g1_cost,
-    g2_cost,
-    g3_cost,
-    g4_cost,
-    g5_cost,
-    g6_cost,
-    g7_cost,
-    g8_cost,
-    g9_cost,
+    175,
+    100,
+    150,
+    150,
+    300,
+    350,
+    400,
+    300,
+    200,
 ]
+
+# Enumeration of nodes, generators, consumers
+nodes = 1:11
+n_nodes = length(nodes)
+n_generators = length(generator_ub)
+n_consumers = length(consumer_demand_lb)
 
