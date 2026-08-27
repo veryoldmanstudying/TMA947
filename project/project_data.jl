@@ -9,7 +9,6 @@ generator_lb = 0 # Non-negative
 
 # Enumeration of nodes, generators, consumers
 nodes = 1:11
-println(nodes)
 n_nodes = length(nodes)
 n_generators = 9
 n_consumers = 7
@@ -112,9 +111,6 @@ node_to_generators = Dict(
     node => [g for (g,n) in generator_to_node if n == node]
     for node in nodes
 )
-
-println(generator_to_node)
-println(node_to_generators)
 
 # Consumers also just reside in one node, but multiple consumers are never present in one node
 consumer_to_node = Dict(
