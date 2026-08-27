@@ -186,3 +186,5 @@ generator_costs = [
     200,
 ]
 
+min_reactive_scalar = -0.03
+max_reactive_scalar = 0.03
