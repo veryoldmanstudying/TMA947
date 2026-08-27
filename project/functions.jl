@@ -64,3 +64,35 @@ end
 function demand_in_current_node(current_node)
     return get(node_to_demand, current_node, 0)
 end
+
+function incoming_reactive_power_current_node(current_node)
+    sum_of_incoming_reactive_power = sum(
+        reactive_power(
+            voltage[supplier],
+            voltage[recipient],
+            phase[supplier],
+            phase[recipient],
+            bkl_edge_values[(supplier, recipient)],
+            gkl_edge_values[(supplier,recipient)]
+        )
+        for (supplier, recipient) in directed_edges if recipient == current_node;
+            init = 0
+    )
+    return sum_of_incoming_reactive_power
+end
+
+function outgoing_reactive_power_from_current_node(current_node)
+    sum_of_outgoing_reactive_power = sum(
+        reactive_power(
+            voltage[supplier],
+            voltage[recipient],
+            phase[supplier],
+            phase[recipient],
+            bkl_edge_values[(supplier, recipient)],
+            gkl_edge_values[(supplier,recipient)]
+        )
+        for (supplier, recipient) in directed_edges if supplier == current_node;
+            init = 0
+    )
+    return sum_of_outgoing_reactive_power
+end
