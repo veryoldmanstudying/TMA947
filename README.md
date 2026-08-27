@@ -1,14 +1,21 @@
 # TMA947
 Non linear optimization
 
+Idea - skip the weird reactive power for now and solve without taking that one into consideration. 
 
 Current questions:
 - Is the demand in each consumer a lower bound or an equality constraint?
 - If it is a lower bound, what happens with excess energy?
 - How to interpret/deal with reactive power? 
-- Reference angle 
+- Reference angle (we actually only care about the diff )
 
-Arbitrary philosophy
+**Core assumptions** 
+Phase theta_l, theta_k are on defined node level, not generator level. So multiple generators residing in one node
+can not have different phases.
+
+A generator can only supply it's own node or an adjacent one as defined by the edges. This is assumed 
+
+**Arbitrary philosophy**
 Constraints, conceptually:
 Local generation + incoming power = local demand + outgoing power
 
