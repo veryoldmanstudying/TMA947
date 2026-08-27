@@ -13,7 +13,9 @@ Current questions:
 Phase theta_l, theta_k are on defined node level, not generator level. So multiple generators residing in one node
 can not have different phases.
 
-A generator can only supply it's own node or an adjacent one as defined by the edges. This is assumed 
+A generator can only supply it's own node or an adjacent one as defined by the edges. This is assumed since otherwise the modelling seems to become a bit harder and I don't like my brain to hurt.
+
+
 
 **Arbitrary philosophy**
 Constraints, conceptually:
