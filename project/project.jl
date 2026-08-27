@@ -104,11 +104,11 @@ the_model = Model(Ipopt.Optimizer)
     the_model,
     [current_node in nodes],
 
-    internal_generation_current_node(current_node)
+    internal_generation_current_node(current_node) # Just returns 0 if there is no generation at current node
      + 
     incoming_power_from_other_suppliers(current_node)
     ==
-    demand_in_current_node(current_node) # Just return 0 if there is no demand at current node
+    demand_in_current_node(current_node) # Just returns 0 if there is no demand at current node
     + 
     outgoing_power_to_recipients(current_node)
 )
