@@ -28,9 +28,41 @@ end
 function internal_generation_current_node(current_node)
     sum_of_generators_in_current_node = sum(
         generation[gen]
-        for gen in node_to_generators[current_node] # The node's own supply, can be multiple generators as in node 2
+        for gen in node_to_generators[current_node]; # The node's own supply, can be multiple generators as in node 2
+        init = 0 # Seems to be needed for handling ArgumentError: reducing over an empty collection is not allowed; consider supplying `init` to the reducer
     )
     return sum_of_generators_in_current_node
+end
+
+function incoming_power_from_other_suppliers(current_node)
+    sum_of_incoming_power_from_other_suppliers = sum(
+        active_power(
+            voltage[supplier],
+            voltage[recipient],
+            phase[supplier],
+            phase[recipient],
+            bkl_edge_values[(supplier, recipient)],
+            gkl_edge_values[(supplier, recipient)]
+
+        ) for (supplier, recipient) in directed_edges if recipient == current_node;
+        init = 0
+    )
+    return sum_of_incoming_power_from_other_suppliers
+end
+
+function outgoing_power_to_recipients(current_node)
+    sum_of_outgoing_power_to_recipients = sum(
+                active_power(
+            voltage[supplier],
+            voltage[recipient],
+            phase[supplier],
+            phase[recipient],
+            bkl_edge_values[(supplier, recipient)],
+            gkl_edge_values[(supplier, recipient)]
+    ) for (supplier, recipient) in directed_edges if supplier == current_node;
+    init = 0
+    )
+    return sum_of_outgoing_power_to_recipients
 end
 
 function demand_in_current_node(current_node)
@@ -65,39 +97,20 @@ the_model = Model(Ipopt.Optimizer)
     generator_lb <= generation[i] <= generator_ub[i]
 )
 
+# Main logic is defined here. 
+# Some sanity checks - if internal generation is 0 and demand is non-zero, then
+# outgoing power will be 0 and incoming power will be equal to demand for a feasible solution 
 @constraint(
     the_model,
     [current_node in nodes],
-    sum(
-        generation[gen]
-        for gen in node_to_generators[current_node] # The node's own supply, can be multiple generators as in node 2
-    )
-    + sum(
-        active_power(
-            voltage[supplier],
-            voltage[recipient],
-            phase[supplier],
-            phase[recipient],
-            bkl_edge_values[(supplier,recipient)],
-            gkl_edge_values[(supplier,recipient)]
-        )
-        for (supplier,recipient) in directed_edges if recipient == current_node # Any external power
-    )
+
+    internal_generation_current_node(current_node)
+     + 
+    incoming_power_from_other_suppliers(current_node)
     ==
     demand_in_current_node(current_node) # Just return 0 if there is no demand at current node
     + 
-    sum(
-        active_power(
-            voltage[supplier],
-            voltage[recipient],
-            phase[supplier],
-            phase[recipient],
-            bkl_edge_values[(supplier,recipient)],
-            gkl_edge_values[(supplier,recipient)]
-        )
-        for (supplier,recipient) in directed_edges if supplier == current_node # Any outgoing power
-
-    )
+    outgoing_power_to_recipients(current_node)
 )
 
 
@@ -116,4 +129,12 @@ optimize!(the_model)
 
 println("Optimal generation:")
 println(value.(generation))
+println("Optimal phase:")
+println(value.(phase))
+println("Optimal voltage:")
 
+println(value.(voltage))
+
+
+# Some other sanity checks now that decision variables have been created. Can for instance list power flows from the definition of 
+# active power, looping over nodes.
