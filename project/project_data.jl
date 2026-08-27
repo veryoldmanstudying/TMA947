@@ -7,6 +7,13 @@ phase_ub = pi
 
 generator_lb = 0 # Non-negative
 
+# Enumeration of nodes, generators, consumers
+nodes = 1:11
+println(nodes)
+n_nodes = length(nodes)
+n_generators = 9
+n_consumers = 7
+
 
 # Representing the edges 
 edges = [
@@ -89,8 +96,7 @@ end
 
 
 # List which generator points to which node. They should only reside in one. 
-
-generator_number_to_node = Dict(
+generator_to_node = Dict(
     1 => 2, # These all live in the same node
     2 => 2,
     3 => 2,
@@ -101,9 +107,17 @@ generator_number_to_node = Dict(
     8 => 9,
     9 => 9
 )
+# Also define the reverse mapping so we can get the one-to-many relationship
+node_to_generators = Dict(
+    node => [g for (g,n) in generator_to_node if n == node]
+    for node in nodes
+)
+
+println(generator_to_node)
+println(node_to_generators)
 
 # Consumers also just reside in one node, but multiple consumers are never present in one node
-consumer_number_to_node = Dict(
+consumer_to_node = Dict(
     1 => 1,
     2 => 4,
     3 => 6,
@@ -111,6 +125,16 @@ consumer_number_to_node = Dict(
     5 => 9,
     6 => 10,
     7 => 11
+)
+
+node_to_consumer = Dict(
+    1 => 1,
+    4 => 2,
+    6 => 3,
+    8 => 4,
+    9 => 5,
+    10 => 6,
+    11 => 7
 )
 
 # Consumer demand lower bound(?) Might be equality constraint later.
@@ -123,6 +147,16 @@ consumer_demand_lb = [
     0.05,
     0.04,
 ]
+
+node_to_demand = Dict(
+    1 => 0.10,
+    4 => 0.19,
+    6 => 0.11,
+    8 => 0.09,
+    9 => 0.21,
+    10 => 0.05,
+    11 => 0.04
+)
 
 # Generator upper bounds
 
@@ -151,11 +185,4 @@ generator_costs = [
     300,
     200,
 ]
-
-# Enumeration of nodes, generators, consumers
-nodes = 1:11
-println(nodes)
-n_nodes = length(nodes)
-n_generators = length(generator_ub)
-n_consumers = length(consumer_demand_lb)
 
