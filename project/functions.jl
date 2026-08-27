@@ -10,7 +10,6 @@ function active_power(
     return voltage_k^2*g_kl - voltage_k*voltage_l*(g_kl*cos(phase_k - phase_l) - b_kl*sin(phase_k - phase_l))
 end
 
-# Figure out what to do with this
 function reactive_power(
     voltage_k,
     voltage_l,
@@ -19,7 +18,7 @@ function reactive_power(
     b_kl,
     g_kl)
 
-    return -voltage_k^2*b_kl + voltage_k*voltage_l(b_kl*cos(phase_k - phase_l) - g_kl*sin(phase_k - phase_l))
+    return -voltage_k^2*b_kl + voltage_k*voltage_l*(b_kl*cos(phase_k - phase_l) - g_kl*sin(phase_k - phase_l))
 end
 
 function internal_generation_current_node(current_node)

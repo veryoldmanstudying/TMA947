@@ -32,7 +32,7 @@ the_model = Model(Ipopt.Optimizer)
     generator_lb <= generation[i] <= generator_ub[i]
 )
 
-# Main logic is defined here. 
+# Main logic for active power is defined here. 
 # Some sanity checks - if internal generation is 0 and demand is non-zero, then
 # outgoing power will be 0 and incoming power will be equal to demand for a feasible solution 
 @constraint(
@@ -48,14 +48,55 @@ the_model = Model(Ipopt.Optimizer)
     outgoing_power_from_current_node(current_node)
 )
 
+# "There is no cost associated to generating or absorbing reactive power." So should not be part of 
+# the objective function.
+# Should be able to comment out everything from here down to the objective function to 
+# recreate the original results that omit the reactive calculations.
 @variable(
     the_model,
     reactive_generation[1:n_generators] # Only generators are capable of absorbing or generating reactive power
 )
+
 @constraint(
     the_model,
     [i=1:n_generators],
     min_reactive_scalar*generator_ub[i] <= reactive_generation[i] <= max_reactive_scalar*generator_ub[i]
+)
+
+@constraint(
+    the_model,
+    [current_node in nodes],
+    sum(
+        reactive_generation[gen] 
+        for gen in node_to_generators[current_node];
+        init = 0
+    )
+    +
+    sum(
+        reactive_power(
+            voltage[supplier],
+            voltage[recipient],
+            phase[supplier],
+            phase[recipient],
+            bkl_edge_values[(supplier, recipient)],
+            gkl_edge_values[(supplier, recipient)]
+        )
+        for (supplier, recipient) in directed_edges if recipient == current_node;
+            init = 0
+    )
+    ==
+        sum(
+        reactive_power(
+            voltage[supplier],
+            voltage[recipient],
+            phase[supplier],
+            phase[recipient],
+            bkl_edge_values[(supplier, recipient)],
+            gkl_edge_values[(supplier, recipient)]
+        )
+        for (supplier, recipient) in directed_edges if supplier == current_node;
+            init = 0
+    )
 )
 
 @objective(
@@ -78,6 +119,7 @@ println(value.(phase))
 println("Optimal voltage:")
 
 println(value.(voltage))
+println(value.(reactive_generation))
 
 
 # Some other sanity checks now that decision variables have been created. Can for instance list power flows from the definition of 
