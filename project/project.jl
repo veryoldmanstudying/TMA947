@@ -72,31 +72,9 @@ the_model = Model(Ipopt.Optimizer)
         init = 0
     )
     +
-    sum(
-        reactive_power(
-            voltage[supplier],
-            voltage[recipient],
-            phase[supplier],
-            phase[recipient],
-            bkl_edge_values[(supplier, recipient)],
-            gkl_edge_values[(supplier, recipient)]
-        )
-        for (supplier, recipient) in directed_edges if recipient == current_node;
-            init = 0
-    )
+    incoming_reactive_power_current_node(current_node)
     ==
-        sum(
-        reactive_power(
-            voltage[supplier],
-            voltage[recipient],
-            phase[supplier],
-            phase[recipient],
-            bkl_edge_values[(supplier, recipient)],
-            gkl_edge_values[(supplier, recipient)]
-        )
-        for (supplier, recipient) in directed_edges if supplier == current_node;
-            init = 0
-    )
+    outgoing_reactive_power_from_current_node(current_node)
 )
 
 @objective(
