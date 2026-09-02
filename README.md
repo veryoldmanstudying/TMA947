@@ -8,7 +8,7 @@ Current questions:
 Phase theta_l, theta_k are on defined node level, not generator level. So multiple generators residing in one node
 can not have different phases. Makes sense if you think of it as the transmission line being the interface to each node. Besides, the coefficients are defined on node level, not generator level. Case closed?
 
-A generator can only supply it's own node or an adjacent one as defined by the edges. This is assumed since otherwise the modelling seems to become a bit harder and I don't like my brain to hurt.
+A generator can only supply it's own node or an adjacent one as defined by the edges. This is assumed since otherwise the modelling seems to become a bit harder and I don't like my brain to hurt. So if node 1 is connected to 2 and 2 is connected to 3, we don't relay power from node 1 to node 3 through node 2. 
 
 
 **Arbitrary philosophy**
